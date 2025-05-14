@@ -1,20 +1,17 @@
 import { motion } from 'framer-motion'
-import { useState } from 'react'
-import { PlusIcon, LockClosedIcon, XMarkIcon, EyeIcon, EyeSlashIcon, PencilSquareIcon, CheckIcon } from '@heroicons/react/24/outline'
+import { useState, useEffect } from 'react'
+import { PlusIcon, LockClosedIcon, XMarkIcon, EyeIcon, EyeSlashIcon, PencilSquareIcon, CheckIcon, TrashIcon } from '@heroicons/react/24/outline'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
 const Dashboard = () => {
-  // Estado inicial vacío
   const [passwords, setPasswords] = useState([])
-
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newPassword, setNewPassword] = useState({
     name: '',
     username: '',
     password: ''
   })
-
   const [viewingPassword, setViewingPassword] = useState(null)
   const [editingPassword, setEditingPassword] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -24,17 +21,38 @@ const Dashboard = () => {
     password: ''
   })
 
-  const handleAddPassword = () => {
+  // Load passwords on component mount
+  useEffect(() => {
+    fetchPasswords()
+  }, [])
+
+  const fetchPasswords = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/passwords')
+      const data = await response.json()
+      setPasswords(data)
+    } catch (error) {
+      console.error('Error fetching passwords:', error)
+    }
+  }
+
+  const handleAddPassword = async () => {
     if (newPassword.name && newPassword.username && newPassword.password) {
-      setPasswords([
-        ...passwords,
-        {
-          id: Date.now(), // Usamos timestamp como ID único
-          ...newPassword
-        }
-      ])
-      setNewPassword({ name: '', username: '', password: '' })
-      setIsModalOpen(false)
+      try {
+        const response = await fetch('http://localhost:3001/api/passwords', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(newPassword),
+        })
+        const data = await response.json()
+        setPasswords([...passwords, { ...newPassword, id: data.id }])
+        setNewPassword({ name: '', username: '', password: '' })
+        setIsModalOpen(false)
+      } catch (error) {
+        console.error('Error adding password:', error)
+      }
     }
   }
 
@@ -54,12 +72,35 @@ const Dashboard = () => {
     setShowPassword(true)
   }
 
-  const handleSaveEdit = (id) => {
-    setPasswords(passwords.map(p => 
-      p.id === id ? { ...p, ...editForm } : p
-    ))
-    setEditingPassword(null)
-    setViewingPassword(null)
+  const handleSaveEdit = async (id) => {
+    try {
+      await fetch(`http://localhost:3001/api/passwords/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editForm),
+      })
+      setPasswords(passwords.map(p => 
+        p.id === id ? { ...p, ...editForm } : p
+      ))
+      setEditingPassword(null)
+      setViewingPassword(null)
+    } catch (error) {
+      console.error('Error updating password:', error)
+    }
+  }
+
+  const handleDeletePassword = async (id) => {
+    try {
+      await fetch(`http://localhost:3001/api/passwords/${id}`, {
+        method: 'DELETE'
+      })
+      setPasswords(passwords.filter(p => p.id !== id))
+      setViewingPassword(null)
+    } catch (error) {
+      console.error('Error deleting password:', error)
+    }
   }
 
   const handleCancelEdit = () => {
@@ -175,20 +216,29 @@ const Dashboard = () => {
                                 </button>
                               </div>
                             </div>
-                            <div className="flex justify-end gap-2 pt-2">
+                            <div className="flex justify-between pt-2">
                               <button
-                                onClick={handleCancelEdit}
-                                className="px-3 py-1.5 text-slate-700 hover:bg-slate-100 rounded-md"
+                                onClick={() => handleDeletePassword(password.id)}
+                                className="flex items-center gap-1 px-3 py-1 text-sm bg-red-100 hover:bg-red-200 text-red-600 rounded-md"
                               >
-                                Cancel
+                                <TrashIcon className="h-4 w-4" />
+                                Delete
                               </button>
-                              <button
-                                onClick={() => handleSaveEdit(password.id)}
-                                className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center gap-1"
-                              >
-                                <CheckIcon className="h-4 w-4" />
-                                Save
-                              </button>
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={handleCancelEdit}
+                                  className="px-3 py-1.5 text-slate-700 hover:bg-slate-100 rounded-md"
+                                >
+                                  Cancel
+                                </button>
+                                <button
+                                  onClick={() => handleSaveEdit(password.id)}
+                                  className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center gap-1"
+                                >
+                                  <CheckIcon className="h-4 w-4" />
+                                  Save
+                                </button>
+                              </div>
                             </div>
                           </div>
                         ) : (
