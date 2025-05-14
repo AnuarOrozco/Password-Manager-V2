@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variables CSS para animaciones/transiciones personalizadas */
+:root {
+  --primary: #2563eb;
+  --secondary: #16a34a;
+  --accent: #d97706;
+}
+
+/* Reset moderno */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Configuración base del documento */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+/* Estilos globales del body */
+body {
+  @apply bg-slate-50 text-slate-800 antialiased;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.5;
+  min-height: 100vh;
+  overflow-x: hidden;
+  text-rendering: optimizeSpeed;
+}
+
+/* Optimización de elementos multimedia */
+img,
+picture,
+video {
+  max-width: 100%;
+  display: block;
+}
+
+/* Normalización de elementos de formulario */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Clases utilitarias personalizadas */
+.smooth-transition {
+  @apply transition-all duration-300 ease-out;
+}
+
+.hero-gradient {
+  background: linear-gradient(
+    to bottom right,
+    rgba(37, 99, 235, 0.15),
+    rgba(22, 163, 74, 0.1)
+  );
+}
+
+/* Preferencia de movimiento reducido */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
