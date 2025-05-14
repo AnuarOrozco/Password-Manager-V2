@@ -1,17 +1,26 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { PlusIcon, LockClosedIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, LockClosedIcon, XMarkIcon, EyeIcon, EyeSlashIcon, PencilSquareIcon, CheckIcon } from '@heroicons/react/24/outline'
 import Header from '../components/Header'
 
 const Dashboard = () => {
   const [passwords, setPasswords] = useState([
-    { id: 1, name: 'Gmail', username: 'anuar@gmail.com', password: '••••••••' },
-    { id: 2, name: 'GitHub', username: 'anuar-dev', password: '••••••••' },
-    { id: 3, name: 'Netflix', username: 'anuar@example.com', password: '••••••••' }
+    { id: 1, name: 'Gmail', username: 'anuar@gmail.com', password: 'mySecurePassword123' },
+    { id: 2, name: 'GitHub', username: 'anuar-dev', password: 'githubPass321' },
+    { id: 3, name: 'Netflix', username: 'anuar@example.com', password: 'netflix2023' }
   ])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newPassword, setNewPassword] = useState({
+    name: '',
+    username: '',
+    password: ''
+  })
+
+  const [viewingPassword, setViewingPassword] = useState(null)
+  const [editingPassword, setEditingPassword] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [editForm, setEditForm] = useState({
     name: '',
     username: '',
     password: ''
@@ -23,14 +32,41 @@ const Dashboard = () => {
         ...passwords,
         {
           id: passwords.length + 1,
-          name: newPassword.name,
-          username: newPassword.username,
-          password: '••••••••'
+          ...newPassword
         }
       ])
       setNewPassword({ name: '', username: '', password: '' })
       setIsModalOpen(false)
     }
+  }
+
+  const handleViewPassword = (password) => {
+    setViewingPassword(password)
+    setEditingPassword(null)
+    setShowPassword(false)
+  }
+
+  const handleEditPassword = (password) => {
+    setEditingPassword(password.id)
+    setEditForm({
+      name: password.name,
+      username: password.username,
+      password: password.password
+    })
+    setShowPassword(true)
+  }
+
+  const handleSaveEdit = (id) => {
+    setPasswords(passwords.map(p => 
+      p.id === id ? { ...p, ...editForm } : p
+    ))
+    setEditingPassword(null)
+    setViewingPassword(null)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingPassword(null)
+    setViewingPassword(null)
   }
 
   return (
@@ -89,10 +125,103 @@ const Dashboard = () => {
                         <h3 className="font-medium text-slate-800">{password.name}</h3>
                         <p className="text-sm text-slate-500">{password.username}</p>
                       </div>
-                      <button className="text-sm text-blue-500 hover:text-blue-600">
+                      <button 
+                        onClick={() => handleViewPassword(password)}
+                        className="text-sm text-blue-500 hover:text-blue-600"
+                      >
                         View
                       </button>
                     </div>
+
+                    {/* Password Detail View */}
+                    {viewingPassword?.id === password.id && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="mt-4 pt-4 border-t border-slate-100"
+                      >
+                        {editingPassword === password.id ? (
+                          <div className="space-y-3">
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700 mb-1">Site Name</label>
+                              <input
+                                type="text"
+                                value={editForm.name}
+                                onChange={(e) => setEditForm({...editForm, name: e.target.value})}
+                                className="w-full px-3 py-2 border border-slate-300 rounded-md"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700 mb-1">Username</label>
+                              <input
+                                type="text"
+                                value={editForm.username}
+                                onChange={(e) => setEditForm({...editForm, username: e.target.value})}
+                                className="w-full px-3 py-2 border border-slate-300 rounded-md"
+                              />
+                            </div>
+                            <div>
+                              <label className="block text-sm font-medium text-slate-700 mb-1">Password</label>
+                              <div className="relative">
+                                <input
+                                  type={showPassword ? "text" : "password"}
+                                  value={editForm.password}
+                                  onChange={(e) => setEditForm({...editForm, password: e.target.value})}
+                                  className="w-full px-3 py-2 border border-slate-300 rounded-md pr-10"
+                                />
+                                <button 
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                                >
+                                  {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                                </button>
+                              </div>
+                            </div>
+                            <div className="flex justify-end gap-2 pt-2">
+                              <button
+                                onClick={handleCancelEdit}
+                                className="px-3 py-1.5 text-slate-700 hover:bg-slate-100 rounded-md"
+                              >
+                                Cancel
+                              </button>
+                              <button
+                                onClick={() => handleSaveEdit(password.id)}
+                                className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-md flex items-center gap-1"
+                              >
+                                <CheckIcon className="h-4 w-4" />
+                                Save
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                              <span className="text-sm font-medium text-slate-700">Password:</span>
+                              <div className="flex items-center">
+                                <span className="font-mono">
+                                  {showPassword ? password.password : '••••••••'}
+                                </span>
+                                <button 
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  className="ml-2 text-slate-400 hover:text-slate-600"
+                                >
+                                  {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                                </button>
+                              </div>
+                            </div>
+                            <div className="flex justify-end pt-2">
+                              <button
+                                onClick={() => handleEditPassword(password)}
+                                className="flex items-center gap-1 px-3 py-1 text-sm bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-md"
+                              >
+                                <PencilSquareIcon className="h-4 w-4" />
+                                Edit
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
                   </motion.li>
                 ))
               ) : (
@@ -161,13 +290,21 @@ const Dashboard = () => {
                   <label className="block text-sm font-medium text-slate-700 mb-1">
                     Password
                   </label>
-                  <input
-                    type="password"
-                    value={newPassword.password}
-                    onChange={(e) => setNewPassword({...newPassword, password: e.target.value})}
-                    className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Enter your password"
-                  />
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={newPassword.password}
+                      onChange={(e) => setNewPassword({...newPassword, password: e.target.value})}
+                      className="w-full px-3 py-2 border border-slate-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+                      placeholder="Enter your password"
+                    />
+                    <button 
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-2.5 text-slate-400 hover:text-slate-600"
+                    >
+                      {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+                    </button>
+                  </div>
                 </div>
               </div>
               

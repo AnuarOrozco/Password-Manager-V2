@@ -15,12 +15,12 @@ const Header = () => {
             {
               icon: <HomeIcon className="h-5 w-5" />,
               name: 'Home',
-              path: '/dashboard'
+              path: '/'
             },
             {
               icon: <KeyIcon className="h-5 w-5" />,
               name: 'Passwords',
-              path: '/passwords'
+              path: '/Dashboard'
             },
             {
               icon: <LockClosedIcon className="h-5 w-5" />,
