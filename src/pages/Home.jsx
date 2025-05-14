@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { LockClosedIcon, ShieldCheckIcon, KeyIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import Header from '../components/Header';
 
 const Home = () => {
   const navigate = useNavigate();

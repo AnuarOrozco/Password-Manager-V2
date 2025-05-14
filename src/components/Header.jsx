@@ -25,7 +25,7 @@ const Header = () => {
             {
               icon: <LockClosedIcon className="h-5 w-5" />,
               name: 'Generator',
-              path: '/generator'
+              path: '/Generator'
             },
             {
               icon: <Cog6ToothIcon className="h-5 w-5" />,

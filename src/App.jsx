@@ -5,6 +5,7 @@ import LoadingSpinner from './components/LoadingSpinner';
 // Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
+const Generator = lazy(() => import('./pages/Generator')); // Nueva importación
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/generator" element={<Generator />} /> {/* Nueva ruta */}
           
           {/* Add a catch-all route for 404 errors */}
           <Route path="*" element={<NotFound />} />
