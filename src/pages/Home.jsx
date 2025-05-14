@@ -1,9 +1,16 @@
 import { motion } from "framer-motion";
 import { LockClosedIcon, ShieldCheckIcon, KeyIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import Header from '../components/Header';
 
 const Home = () => {
+  const navigate = useNavigate();
+
+  const handleAccessVault = () => {
+    navigate('/dashboard');
+  };
+
 return (
     <motion.div
         initial={{ opacity: 0 }}
@@ -11,9 +18,6 @@ return (
         transition={{ duration: 0.8 }}
         className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100"
     >
-        {/* Header Component */}
-        <Header />
-
         {/* Main Content */}
         <main className="container mx-auto px-6 py-20 max-w-4xl">
             {/* Hero Section */}
@@ -46,7 +50,10 @@ return (
                     animate={{ opacity: 1 }}
                     transition={{ delay: 0.8, duration: 0.8 }}
                 >
-                    <button className="group flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mx-auto">
+                    <button 
+                        onClick={handleAccessVault}
+                        className="group flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 mx-auto"
+                    >
                         Access Vault
                         <ArrowRightIcon className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                     </button>

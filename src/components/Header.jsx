@@ -15,7 +15,7 @@ const Header = () => {
             {
               icon: <HomeIcon className="h-5 w-5" />,
               name: 'Home',
-              path: '/'
+              path: '/dashboard'
             },
             {
               icon: <KeyIcon className="h-5 w-5" />,
