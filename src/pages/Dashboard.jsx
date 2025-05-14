@@ -4,11 +4,8 @@ import { PlusIcon, LockClosedIcon, XMarkIcon, EyeIcon, EyeSlashIcon, PencilSquar
 import Header from '../components/Header'
 
 const Dashboard = () => {
-  const [passwords, setPasswords] = useState([
-    { id: 1, name: 'Gmail', username: 'anuar@gmail.com', password: 'mySecurePassword123' },
-    { id: 2, name: 'GitHub', username: 'anuar-dev', password: 'githubPass321' },
-    { id: 3, name: 'Netflix', username: 'anuar@example.com', password: 'netflix2023' }
-  ])
+  // Estado inicial vacío
+  const [passwords, setPasswords] = useState([])
 
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [newPassword, setNewPassword] = useState({
@@ -31,7 +28,7 @@ const Dashboard = () => {
       setPasswords([
         ...passwords,
         {
-          id: passwords.length + 1,
+          id: Date.now(), // Usamos timestamp como ID único
           ...newPassword
         }
       ])
