@@ -30,7 +30,7 @@ const Header = () => {
             {
               icon: <Cog6ToothIcon className="h-5 w-5" />,
               name: 'Settings',
-              path: '/settings'
+              path: '/Settings'
             }
           ].map((item, index) => (
             <motion.li

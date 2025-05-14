@@ -2,10 +2,10 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 import LoadingSpinner from './components/LoadingSpinner';
 
-// Lazy load pages for better performance
 const Home = lazy(() => import('./pages/Home'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Generator = lazy(() => import('./pages/Generator')); // Nueva importación
+const Generator = lazy(() => import('./pages/Generator'));
+const Settings = lazy(() => import('./pages/Settings'));
 
 function App() {
   return (
@@ -14,8 +14,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/generator" element={<Generator />} /> {/* Nueva ruta */}
-          
+          <Route path="/generator" element={<Generator />} /> {}
+          <Route path="/settings" element={<Settings />} />
           {/* Add a catch-all route for 404 errors */}
           <Route path="*" element={<NotFound />} />
         </Routes>
@@ -24,7 +24,7 @@ function App() {
   );
 }
 
-// Basic 404 component - create this as a separate component for better organization
+// 404 Not Found Component
 function NotFound() {
   return (
     <div className="min-h-screen flex items-center justify-center">
