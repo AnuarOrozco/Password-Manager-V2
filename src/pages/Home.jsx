@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { LockClosedIcon, ShieldCheckIcon, KeyIcon, ArrowRightIcon } from "@heroicons/react/24/outline";
+import Footer from "../components/Footer";
 
 const Home = () => {
   return (
@@ -88,16 +89,8 @@ const Home = () => {
         </motion.div>
       </main>
 
-      {/* Footer */}
-      <motion.footer
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.8 }}
-        viewport={{ once: true }}
-        className="py-8 text-center text-slate-500 text-sm"
-      >
-        <p>© {new Date().getFullYear()} Personal Password Vault • Not affiliated with any company</p>
-      </motion.footer>
+      {/* Footer Component */}
+      <Footer />
     </motion.div>
   );
 };
