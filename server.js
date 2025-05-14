@@ -1,14 +1,13 @@
-const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
-const cors = require('cors');
-const bodyParser = require('body-parser');
+import express from 'express';
+import sqlite3 from 'sqlite3';
+import cors from 'cors';
 
 const app = express();
 const PORT = 3001;
 
-// Middleware
+// Middleware (body-parser ya no es necesario en Express 4.16+)
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
 // Configuración de SQLite
 const db = new sqlite3.Database('./passwords.db', (err) => {
