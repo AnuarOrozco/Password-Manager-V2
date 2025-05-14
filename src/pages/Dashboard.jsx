@@ -2,6 +2,7 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { PlusIcon, LockClosedIcon, XMarkIcon, EyeIcon, EyeSlashIcon, PencilSquareIcon, CheckIcon } from '@heroicons/react/24/outline'
 import Header from '../components/Header'
+import Footer from '../components/Footer'
 
 const Dashboard = () => {
   // Estado inicial vacío
@@ -323,6 +324,7 @@ const Dashboard = () => {
           </motion.div>
         )}
       </motion.div>
+      <Footer />
     </>
   )
 }
