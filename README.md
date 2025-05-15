@@ -1,6 +1,12 @@
 # Password Manager v2
 
 Password Manager v2 is a secure and user-friendly application designed to help you manage your passwords efficiently. With robust encryption and an intuitive interface, it ensures your sensitive information remains protected while being easily accessible.
+## Preview
+
+Below you can find screenshots showcasing the application's interface and features.
+
+![Login Screen](./screenshots/login.png)
+![Dashboard](./screenshots/dashboard.png)
 
 ## Features
 
@@ -16,7 +22,15 @@ This project is a demonstration only and does not provide real password manageme
 
 ## License
 
-This project is licensed under the MIT License.
+## Technologies Used
+
+- **React:** Main library for building the user interface.
+- **Vite:** Fast development tool for React projects.
+- **Tailwind CSS:** Utility-first CSS framework for rapid and customizable styling.
+- **Autoprefixer:** Tool for automatically adding CSS vendor prefixes.
+- **Framer Motion:** Library for smooth animations in React.
+- **SQLite:** Lightweight database for local credential storage.
+
 
 ## Disclaimer
 
