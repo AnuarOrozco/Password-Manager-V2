@@ -1,12 +1,23 @@
-# React + Vite
+# Password Manager v2
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Password Manager v2 is a secure and user-friendly application designed to help you manage your passwords efficiently. With robust encryption and an intuitive interface, it ensures your sensitive information remains protected while being easily accessible.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Secure Storage:** All passwords are encrypted using industry-standard algorithms.
+- **User Authentication:** Access your vault with a master password.
+- **Password Generator:** Create strong, unique passwords for your accounts.
+- **Cross-Platform:** Compatible with major operating systems.
+- **Easy Search:** Quickly find and manage your saved credentials.
 
-## Expanding the ESLint configuration
+## Important Notice
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This project is a demonstration only and does not provide real password management functionality. Its purpose is for personal use and experimentation on a local, isolated server for security reasons. It is not intended for production or public deployment.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Disclaimer
+
+This software is provided as-is. Use at your own risk.
