@@ -7,24 +7,24 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 export default defineConfig({
   plugins: [react()],
-  root: __dirname,
-  publicDir: path.resolve(__dirname, 'public'),
+  server: {
+    port: 5173,
+    strictPort: true,
+    open: '/',
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
+      }
+    }
+  },
   build: {
     outDir: path.resolve(__dirname, 'dist'),
     emptyOutDir: true,
     rollupOptions: {
-      input: path.resolve(__dirname, 'public/index.html')
-    }
-  },
-  server: {
-    open: true,
-    port: 5173,
-    strictPort: true,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001',
-        changeOrigin: true
-      }
+      input: path.resolve(__dirname, 'index.html')
     }
   }
 })

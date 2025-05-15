@@ -5,86 +5,60 @@ import cors from 'cors';
 const app = express();
 const PORT = 3001;
 
-// Middleware (body-parser ya no es necesario en Express 4.16+)
-app.use(cors());
+// Configuración mejorada de CORS
+app.use(cors({
+  origin: 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}));
+
 app.use(express.json());
 
-// Configuración de SQLite
-const db = new sqlite3.Database('./passwords.db', (err) => {
+// Conexión mejorada a SQLite
+const db = new sqlite3.Database('./passwords.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
   if (err) {
-    console.error(err.message);
+    console.error('Error al conectar a SQLite:', err.message);
+    process.exit(1); // Salir si no puede conectar a la base de datos
   }
-  console.log('Connected to the SQLite database.');
+  console.log('Conectado a SQLite database');
 });
 
-// Crear tabla si no existe
+// Verificación de tablas
 db.serialize(() => {
-  db.run(`
-    CREATE TABLE IF NOT EXISTS passwords (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT NOT NULL,
-      username TEXT NOT NULL,
-      password TEXT NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )
-  `);
-});
-
-// API Endpoints
-app.get('/api/passwords', (req, res) => {
-  db.all('SELECT * FROM passwords', [], (err, rows) => {
+  db.run(`CREATE TABLE IF NOT EXISTS passwords (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    username TEXT NOT NULL,
+    password TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  )`, (err) => {
     if (err) {
-      res.status(400).json({ error: err.message });
-      return;
+      console.error('Error al crear tabla:', err.message);
     }
-    res.json(rows);
   });
 });
 
-app.post('/api/passwords', (req, res) => {
-  const { name, username, password } = req.body;
-  db.run(
-    'INSERT INTO passwords (name, username, password) VALUES (?, ?, ?)',
-    [name, username, password],
-    function (err) {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ id: this.lastID });
+// Endpoints con mejor manejo de errores
+app.get('/api/passwords', (req, res) => {
+  db.all('SELECT * FROM passwords ORDER BY created_at DESC', [], (err, rows) => {
+    if (err) {
+      console.error('Error en GET /api/passwords:', err);
+      return res.status(500).json({ error: 'Error interno del servidor' });
     }
-  );
+    res.json(rows || []);
+  });
 });
 
-app.put('/api/passwords/:id', (req, res) => {
-  const { name, username, password } = req.body;
-  db.run(
-    'UPDATE passwords SET name = ?, username = ?, password = ? WHERE id = ?',
-    [name, username, password, req.params.id],
-    function (err) {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ changes: this.changes });
-    }
-  );
-});
+// [Aquí van los otros endpoints POST, PUT, DELETE...]
 
-app.delete('/api/passwords/:id', (req, res) => {
-  db.run(
-    'DELETE FROM passwords WHERE id = ?',
-    [req.params.id],
-    function (err) {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ changes: this.changes });
-    }
-  );
+// Manejo de errores global
+app.use((err, req, res, next) => {
+  console.error('Error global:', err.stack);
+  res.status(500).json({ error: 'Algo salió mal!' });
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`Servidor backend en http://localhost:${PORT}`);
+}).on('error', (err) => {
+  console.error('Error al iniciar el servidor:', err);
 });

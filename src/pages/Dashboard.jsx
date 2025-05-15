@@ -26,15 +26,18 @@ const Dashboard = () => {
     fetchPasswords()
   }, [])
 
-  const fetchPasswords = async () => {
-    try {
-      const response = await fetch('http://localhost:3001/api/passwords')
-      const data = await response.json()
-      setPasswords(data)
-    } catch (error) {
-      console.error('Error fetching passwords:', error)
+const fetchPasswords = async () => {
+  try {
+    const response = await fetch('/api/passwords');
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const data = await response.json();
+    setPasswords(data);
+  } catch (error) {
+    console.error('Error fetching passwords:', error);
   }
+}
 
   const handleAddPassword = async () => {
     if (newPassword.name && newPassword.username && newPassword.password) {
