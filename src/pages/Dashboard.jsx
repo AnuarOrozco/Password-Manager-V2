@@ -20,42 +20,55 @@ const Dashboard = () => {
     username: '',
     password: ''
   })
+  const [error, setError] = useState(null)
 
   // Load passwords on component mount
   useEffect(() => {
     fetchPasswords()
   }, [])
 
-const fetchPasswords = async () => {
-  try {
-    const response = await fetch('/api/passwords');
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+  const fetchPasswords = async () => {
+    try {
+      const response = await fetch('/api/passwords')
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const data = await response.json()
+      setPasswords(data)
+      setError(null)
+    } catch (error) {
+      console.error('Error fetching passwords:', error)
+      setError('Failed to load passwords. Please check your server connection.')
     }
-    const data = await response.json();
-    setPasswords(data);
-  } catch (error) {
-    console.error('Error fetching passwords:', error);
   }
-}
 
   const handleAddPassword = async () => {
-    if (newPassword.name && newPassword.username && newPassword.password) {
-      try {
-        const response = await fetch('http://localhost:3001/api/passwords', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(newPassword),
-        })
-        const data = await response.json()
-        setPasswords([...passwords, { ...newPassword, id: data.id }])
-        setNewPassword({ name: '', username: '', password: '' })
-        setIsModalOpen(false)
-      } catch (error) {
-        console.error('Error adding password:', error)
+    if (!newPassword.name || !newPassword.username || !newPassword.password) {
+      setError('Please fill all fields')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/passwords', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newPassword),
+      })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
       }
+
+      const data = await response.json()
+      setPasswords([...passwords, { ...newPassword, id: data.id }])
+      setNewPassword({ name: '', username: '', password: '' })
+      setIsModalOpen(false)
+      setError(null)
+    } catch (error) {
+      console.error('Error adding password:', error)
+      setError('Failed to add password. Please try again.')
     }
   }
 
@@ -77,32 +90,46 @@ const fetchPasswords = async () => {
 
   const handleSaveEdit = async (id) => {
     try {
-      await fetch(`http://localhost:3001/api/passwords/${id}`, {
+      const response = await fetch(`/api/passwords/${id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(editForm),
       })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       setPasswords(passwords.map(p => 
         p.id === id ? { ...p, ...editForm } : p
       ))
       setEditingPassword(null)
       setViewingPassword(null)
+      setError(null)
     } catch (error) {
       console.error('Error updating password:', error)
+      setError('Failed to update password. Please try again.')
     }
   }
 
   const handleDeletePassword = async (id) => {
     try {
-      await fetch(`http://localhost:3001/api/passwords/${id}`, {
+      const response = await fetch(`/api/passwords/${id}`, {
         method: 'DELETE'
       })
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       setPasswords(passwords.filter(p => p.id !== id))
       setViewingPassword(null)
+      setError(null)
     } catch (error) {
       console.error('Error deleting password:', error)
+      setError('Failed to delete password. Please try again.')
     }
   }
 
@@ -131,6 +158,13 @@ const fetchPasswords = async () => {
               Welcome, <span className="font-medium">Anuar</span>
             </h1>
           </motion.header>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-4 bg-red-100 text-red-700 rounded-lg">
+              {error}
+            </div>
+          )}
 
           {/* Passwords Section */}
           <motion.section
@@ -281,7 +315,7 @@ const fetchPasswords = async () => {
                   animate={{ opacity: 1 }}
                   className="p-8 text-center text-slate-500"
                 >
-                  No passwords saved yet. Click "Add New" to create your first entry.
+                  {error ? error : 'No passwords saved yet. Click "Add New" to create your first entry.'}
                 </motion.li>
               )}
             </ul>
